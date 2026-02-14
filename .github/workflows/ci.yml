@@ -1,0 +1,124 @@
+name: CI
+
+on:
+  pull_request:
+    branches: [main, develop]
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  analyze:
+    name: Analyze
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Run analyzer
+        run: dart analyze --fatal-infos
+
+  format:
+    name: Format
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+
+      - name: Check formatting
+        run: dart format --set-exit-if-changed .
+
+  test:
+    name: Test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Run tests with coverage
+        run: |
+          has_tests=false
+          for dir in . apps/* packages/*; do
+            if [ -d "$dir/test" ]; then
+              echo "::group::Testing $dir"
+              (cd "$dir" && dart test --coverage=coverage)
+              echo "::endgroup::"
+              has_tests=true
+            fi
+          done
+          if [ "$has_tests" = false ]; then
+            echo "No test directories found — skipping"
+          fi
+
+      - name: Upload coverage to Codecov
+        if: success()
+        uses: codecov/codecov-action@v4
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          fail_ci_if_error: false
+
+  build:
+    name: Build (${{ matrix.target }})
+    runs-on: ${{ matrix.os }}
+    needs: [analyze, format, test]
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - target: android
+            os: ubuntu-latest
+            build-cmd: flutter build apk --debug
+          - target: ios
+            os: macos-latest
+            build-cmd: flutter build ios --no-codesign
+          - target: web
+            os: ubuntu-latest
+            build-cmd: flutter build web
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+
+      - name: Set up Java (Android)
+        if: matrix.target == 'android'
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 17
+
+      - name: Find and build Flutter apps
+        run: |
+          built=false
+          for dir in apps/*/; do
+            if [ -f "$dir/pubspec.yaml" ] && grep -q "flutter:" "$dir/pubspec.yaml"; then
+              echo "::group::Building $dir (${{ matrix.target }})"
+              (cd "$dir" && flutter pub get && ${{ matrix.build-cmd }})
+              echo "::endgroup::"
+              built=true
+            fi
+          done
+          if [ "$built" = false ]; then
+            echo "No Flutter apps found in apps/ — skipping build"
+          fi
