@@ -23,6 +23,16 @@ jobs:
       - name: Install dependencies
         run: flutter pub get
 
+      - name: Run build_runner (code generation)
+        run: |
+          for dir in packages/* apps/*; do
+            if [ -f "$dir/pubspec.yaml" ] && grep -q "build_runner:" "$dir/pubspec.yaml"; then
+              echo "::group::build_runner in $dir"
+              (cd "$dir" && dart run build_runner build --delete-conflicting-outputs)
+              echo "::endgroup::"
+            fi
+          done
+
       - name: Run analyzer
         run: dart analyze --fatal-infos
 
@@ -54,13 +64,27 @@ jobs:
       - name: Install dependencies
         run: flutter pub get
 
+      - name: Run build_runner (code generation)
+        run: |
+          for dir in packages/* apps/*; do
+            if [ -f "$dir/pubspec.yaml" ] && grep -q "build_runner:" "$dir/pubspec.yaml"; then
+              echo "::group::build_runner in $dir"
+              (cd "$dir" && dart run build_runner build --delete-conflicting-outputs)
+              echo "::endgroup::"
+            fi
+          done
+
       - name: Run tests with coverage
         run: |
           has_tests=false
           for dir in . apps/* packages/*; do
             if [ -d "$dir/test" ]; then
               echo "::group::Testing $dir"
-              (cd "$dir" && flutter test --coverage)
+              if grep -q "flutter:" "$dir/pubspec.yaml" 2>/dev/null; then
+                (cd "$dir" && flutter test --coverage)
+              else
+                (cd "$dir" && dart test --coverage=coverage)
+              fi
               echo "::endgroup::"
               has_tests=true
             fi
