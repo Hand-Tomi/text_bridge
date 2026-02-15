@@ -4,6 +4,7 @@ environment:
   sdk: ^3.11.0
 workspace:
   - apps/text_bridge
+  - packages/domain
 dev_dependencies:
   melos: ^7.4.0
 melos:

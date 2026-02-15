@@ -5,6 +5,10 @@ build/
 .flutter-plugins
 .flutter-plugins-dependencies
 
+# Generated code (Freezed, json_serializable, Riverpod, etc.)
+*.freezed.dart
+*.g.dart
+
 # IDE
 .idea/
 *.iml
