@@ -61,7 +61,9 @@ allowed-tools: Bash(git status*), Bash(git diff*), Bash(git log*), Bash(git comm
 
 4. **커밋** (staged 파일만 커밋한다):
    - **절대 `git add`를 실행하지 않는다.** 사용자가 이미 스테이징한 파일만 커밋 대상이다.
-   - `git diff --staged`로 스테이징된 변경 사항이 없으면 커밋하지 않고, 사용자에게 먼저 `git add`로 파일을 스테이징하라고 안내한다.
+   - `git diff --staged`로 스테이징된 변경 사항이 없으면 커밋하지 않고, 사용자에게 안내한다:
+     "스테이징된 변경 사항이 없습니다. `git add <파일>` 또는 `git add -p`로 커밋할 파일을 먼저 스테이징해 주세요."
+     변경된 파일 목록(`git status` 결과)을 함께 보여준다.
    - `.env`, 자격 증명 파일 등 민감한 파일이 스테이징되어 있으면 경고하고 커밋을 중단한다.
    - 커밋 메시지는 반드시 HEREDOC 형식으로 전달한다:
      ```bash

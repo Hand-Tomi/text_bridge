@@ -215,9 +215,13 @@ git push origin v1.0.0
 - [ ] feat: 새로운 기능
 - [ ] fix: 버그 수정
 - [ ] docs: 문서 변경
+- [ ] style: 코드 포맷팅
 - [ ] refactor: 리팩토링
 - [ ] test: 테스트
 - [ ] chore: 기타
+- [ ] perf: 성능 개선
+- [ ] ci: CI 설정 변경
+- [ ] build: 빌드 시스템 변경
 
 ## 테스트
 

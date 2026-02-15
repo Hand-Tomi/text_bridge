@@ -9,7 +9,7 @@ allowed-tools: Bash(git *), Bash(gh *), Bash(dart *), Bash(fvm *), Bash(make *),
 
 # Create PR Skill
 
-현재 작업 브랜치를 rebase하고, CI 검사(analyze + format)를 실행하고, GitHub PR을 생성한다.
+현재 작업 브랜치를 rebase하고, CI 검사(analyze + format + test)를 실행하고, GitHub PR을 생성한다.
 프로젝트의 git-flow 규칙(`docs/git-flow.md`)을 따른다.
 
 ## 절차
@@ -45,7 +45,7 @@ allowed-tools: Bash(git *), Bash(gh *), Bash(dart *), Bash(fvm *), Bash(make *),
    - 해결 후 `git add <파일>` → `git rebase --continue`를 실행한다.
    - **자동 해결이 불가능하면** `git rebase --abort`를 실행하고 사용자에게 수동 해결을 안내한 후 **즉시 중단**한다.
 
-### 4단계: CI 검사 (analyze + format)
+### 4단계: CI 검사 (analyze + format + test)
 
 1. `dart analyze --fatal-infos`를 실행한다.
    - 분석 오류가 있으면 코드를 수정한다.
@@ -64,6 +64,8 @@ allowed-tools: Bash(git *), Bash(gh *), Bash(dart *), Bash(fvm *), Bash(make *),
      ```
 4. 수정 후 `dart analyze --fatal-infos`를 다시 실행하여 통과를 확인한다.
    - 여전히 실패하면 사용자에게 안내하고 **즉시 중단**한다.
+5. `dart test`를 실행한다.
+   - 테스트 실패 시 사용자에게 실패한 테스트 목록을 안내하고 **즉시 중단**한다.
 
 ### 5단계: Push
 
@@ -84,7 +86,7 @@ allowed-tools: Bash(git *), Bash(gh *), Bash(dart *), Bash(fvm *), Bash(make *),
      - `chore/*` → `chore` 체크
      - 커밋 내역에 다른 type이 포함되어 있으면 해당 항목도 추가로 체크한다.
    - **`## 테스트`**: 실행한 검사 항목을 체크한다.
-     - `dart analyze` 통과 → `[x] 기존 테스트 통과 확인`
+     - `dart test` 통과 → `[x] 기존 테스트 통과 확인`
    - **`## 관련 이슈`**: 이슈 번호가 있으면 `closes #이슈번호`를 작성한다.
 
 3. PR 제목: 커밋 내역을 분석하여 변경 사항을 요약하는 간결한 제목을 작성한다 (70자 이내).
@@ -99,6 +101,11 @@ allowed-tools: Bash(git *), Bash(gh *), Bash(dart *), Bash(fvm *), Bash(make *),
    ```
 
 5. 생성된 PR URL을 출력한다.
+
+### 7단계: hotfix 후속 작업 안내
+
+- `hotfix/*` 브랜치인 경우에만 아래 안내를 출력한다:
+  - "`main` 머지 후 동일 변경을 `develop`에도 반영해야 합니다. `develop` 대상 PR을 별도로 생성하세요."
 
 ## 금지 사항
 
