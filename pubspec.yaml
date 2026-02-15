@@ -6,3 +6,23 @@ workspace:
   - apps/text_bridge
 dev_dependencies:
   melos: ^7.4.0
+melos:
+  sdkPath: .fvm/flutter_sdk
+  scripts:
+    get:
+      run: flutter pub get
+      description: Get dependencies for all packages
+      exec:
+        concurrency: 1
+    build:
+      run: dart run build_runner build --delete-conflicting-outputs
+      description: Run build_runner for all packages
+      packageFilters:
+        dependsOn: build_runner
+      exec:
+        concurrency: 1
+    analyze:
+      run: dart analyze .
+      description: Run dart analyze for all packages
+      exec:
+        concurrency: 1

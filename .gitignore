@@ -16,3 +16,6 @@ build/
 # Vim
 *.swp
 *.swo
+
+# FVM Version Cache
+.fvm/
