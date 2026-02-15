@@ -60,7 +60,7 @@ jobs:
           for dir in . apps/* packages/*; do
             if [ -d "$dir/test" ]; then
               echo "::group::Testing $dir"
-              (cd "$dir" && dart test --coverage=coverage)
+              (cd "$dir" && flutter test --coverage)
               echo "::endgroup::"
               has_tests=true
             fi
