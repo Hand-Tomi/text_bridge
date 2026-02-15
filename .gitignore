@@ -19,3 +19,6 @@ build/
 
 # FVM Version Cache
 .fvm/
+
+# Architecture advisor skill (private, not for commit)
+.claude/skills/arch-advisor/
