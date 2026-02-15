@@ -1,4 +1,8 @@
-name: text_bridge
+name: text_bridge_workspace
 publish_to: none
 environment:
   sdk: ^3.11.0
+workspace:
+  - apps/text_bridge
+dev_dependencies:
+  melos: ^7.4.0
