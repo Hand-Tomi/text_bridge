@@ -7,7 +7,7 @@ class FlavorConfig {
   final bool isDebugMode;
 
   String get baseUrl => switch (flavor) {
-        EnvironmentType.dev => 'https://dev-api.example.com',
-        EnvironmentType.prod => 'https://api.example.com',
-      };
+    EnvironmentType.dev => 'https://dev-api.example.com',
+    EnvironmentType.prod => 'https://api.example.com',
+  };
 }
