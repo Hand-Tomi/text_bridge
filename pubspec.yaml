@@ -5,6 +5,7 @@ environment:
 workspace:
   - apps/text_bridge
   - packages/domain
+  - packages/system
 dev_dependencies:
   melos: ^7.4.0
 melos:
