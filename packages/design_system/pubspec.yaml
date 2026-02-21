@@ -1,0 +1,13 @@
+name: design_system
+publish_to: none
+resolution: workspace
+environment:
+  sdk: ^3.11.0
+dependencies:
+  flutter:
+    sdk: flutter
+  freezed_annotation: ^3.0.0
+dev_dependencies:
+  freezed: ^3.0.6
+  build_runner: ^2.4.15
+  lints: ^6.0.0
